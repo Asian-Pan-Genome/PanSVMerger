@@ -31,55 +31,7 @@ bgzip -@16 MC.wave.bi.createmulti.merge.vcf ## if input compressed file, `SV.mer
 bcftools index -t --threads 16 MC.wave.bi.createmulti.merge.vcf.gz
 ```
 
-## Parameters
-```
-
-```
-
-
-
-
-## Output
-
-
-## some useful tools
-### convert between phased diploid vcf and haploid vcf
-
-
-## Citation
-
-
-
-Xxx
-
-
-
-## Help
-
-
-
-If you get any problems, please raise an [issue](https://github.com/tingting100/PanSVMerger/issues) first. For another helps, please contact xxx and quanyu_chen@outlook.com.
-
-
-
-## TO-DO-LIST
-
-- consider make most of parameters accessible, such as 
-  - length threshold for grouping or make is as an dynamic setting which depends on allele length; 
-  - the vsearch path, the main parameters of vsearch, like threads, cluster mode,
-    - (paritally) done (quanyu)
-  - for clustering very long or large sequences, consider to use [HAlign](https://github.com/malabz/HAlign-3)
-  - 
-
-- faster IO? using other method to read or write VCF files? [PyVCF](https://github.com/jamescasbon/PyVCF)
-  - I will use `pysam` to edit vcf records more efficiently. (quanyu)
-    - done
-
-- Add some modules for statistics or visualization
-  - basic statistics
-    - Fst?
-  - histogram for AC before and after clustering
-
-- other problem
-  - whether should consider the direction of alignment, for example, in a clustered group, one sequence aligns with inverted direction, how to deal with it?
-  - 
+### Contacts
+(yangting@genomics.cn)
+(yangchentao@genomics.cn)
+(quanyu_chen@outlook.com)
