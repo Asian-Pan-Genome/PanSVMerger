@@ -69,7 +69,7 @@ This workflow integrates both assembly-based and long-read SV callers, followed 
 #### 1. Assembly-based SV Calling
 
 ```bash
-mkdir ./long_reads.SV/;cd ./long_reads.SV/
+mkdir ./long_reads.SV/ && cd ./long_reads.SV/
 # SVIM-asm
 ~/bin/minimap2/2.17/minimap2 -a -x asm5 --cs -r2k -t 4 genome.fa query.fa > alignments.sam
 ~/bin/samtools sort -m4G -@4 -o alignments.sorted.bam alignments.sam
@@ -83,11 +83,11 @@ mkdir ./long_reads.SV/;cd ./long_reads.SV/
 
 python3 ~/bin/syri-1.5/syri/bin/syri -c sample.filtered.coords -r genome.fa -q query.fa \
   -d sample.delta.filter -k --prefix sample -s ~/bin/show-snps --lf syri.log
-```bash
+```
 
 #### 2. Long-read SV Calling
-```bash
-mkdir ./long_reads.SV/;cd ./long_reads.SV/
+```
+mkdir ./long_reads.SV/; cd ./long_reads.SV/
 # Sniffles
 # Base alignment quality adjustment
 ~/bin/samtools calmd --threads 6 -b HiFi_reads.sort.head.bam genome.fa > HiFi_reads.sort.baq.bam
@@ -103,7 +103,7 @@ mkdir ./long_reads.SV/;cd ./long_reads.SV/
 ~/bin/pbsv discover HiFi_reads.sort.head.bam HiFi_reads.svsig.gz
 tabix -c '#' -s 3 -b 4 -e 4 HiFi_reads.svsig.gz
 ~/bin/pbsv call --ccs genome.fa HiFi_reads.svsig.gz HiFi_reads.pbsv.vcf
-```bash
+```
 
 #### 3. Merging Results
 ```bash
@@ -113,7 +113,7 @@ ls ./assembly_based.SV/*.vcf >> combine.txt
 
 # Merge with SURVIVOR (max distance 1000bp, require 2 callers support)
 ~/bin/SURVIVOR merge combine.txt 1000 2 1 1 0 50 sampleN.truth.sv.vcf.gz
-```bash
+```
 
 #### Output Files
 ```bash
@@ -122,7 +122,26 @@ sampleN.truth.sv.vcf.gz: High quality final merged VCF
 ./long_reads.SV/: Individual caller VCFs
 
 ./assembly_based.SV/: Assembly-based VCFs
-```bash
+```
+### Compare-with-benchmarking
+```
+# 01_subsample_svs.sh
+vcftools --gzvcf MC.APGpangraph.vcf.gz --indv sampleN --recode --stdout |bgzip -c > sampleN.sv.vcf.gz
+tabix -p vcf sampleN.sv.vcf.gz
+
+# 02_filter_large_svs.sh
+vcfbub -l 0 -a 100000 -i sampleN.vcf.gz -o sampleN.filtered.vcf.gz
+
+# 03_decompose_alleles.sh
+vcfwave -I 1000 -i sampleN.filtered.vcf.gz -o sampleN.wave.vcf.gz
+
+# 04_split_biallelic.sh
+bcftools norm -m -any -i sampleN.wave.vcf.gz -o sampleN.biallelic.vcf.gz
+
+# 05_run_truvari.sh
+truvari bench -b sampleN.truth.sv.vcf.gz -c sampleN.biallelic.vcf.gz -o truvari_results
+```
+
 
 ### Contacts
 (yangting@genomics.cn)
