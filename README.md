@@ -92,12 +92,15 @@ mkdir ./long_reads.SV/ && cd ./long_reads.SV/
 ~/bin/samtools calmd --threads 6 -b HiFi_reads.sort.head.bam genome.fa > HiFi_reads.sort.baq.bam
 ~/bin/sniffles-core-1.0.12/sniffles -m HiFi_reads.sort.baq.bam -v HiFi_reads.sniffles.vcf \
   --report_BND --skip_parameter_estimation --min_support 3
+
 # SVIM
 ~/bin/svim alignment ./ HiFi_reads.sort.head.bam genome.fa
+
 # CuteSV
 ~/bin/cuteSV HiFi_reads.sort.head.bam genome.fa HiFi_reads.cuteSV.vcf ./ \
   --max_cluster_bias_INS 1000 --diff_ratio_merging_INS 0.9 \
   --max_cluster_bias_DEL 1000 --diff_ratio_merging_DEL 0.5 -t 8 --genotype
+
 # PBSV
 ~/bin/pbsv discover HiFi_reads.sort.head.bam HiFi_reads.svsig.gz
 tabix -c '#' -s 3 -b 4 -e 4 HiFi_reads.svsig.gz
