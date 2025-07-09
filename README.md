@@ -62,7 +62,7 @@ bgzip -@16 MC.wave.bi.createmulti.merge.vcf ## if input compressed file, `SV.mer
 bcftools index -t --threads 16 MC.wave.bi.createmulti.merge.vcf.gz
 ```
 
-### Construct Benchmarking
+### Construct-Benchmarking
 
 This workflow integrates both assembly-based and long-read SV callers, followed by comprehensive merging to generate a high-confidence SV set.
 
