@@ -116,11 +116,11 @@ ls ./assembly_based.SV/*.vcf >> combine.txt
 
 #### Output Files
 ```bash
-sampleN.truth.sv.vcf.gz: High quality final merged VCF
+sampleN.truth.sv.vcf.gz: Final merged structural variant calls for each individual
 
-./long_reads.SV/: Individual caller VCFs
+./long_reads.SV/: Individual long-reads-based SV VCFs
 
-./assembly_based.SV/: Assembly-based VCFs
+./assembly_based.SV/: Individual Assembly-based SV VCFs
 ```
 ### Compare-with-benchmarking
 ```
