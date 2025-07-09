@@ -1,4 +1,26 @@
 # PanSVMerger-A-Pipeline-for-Merging-Multi-Allele-Structural-Variants
+# Table of Contents
+
+1. [About](#About)
+   - [Pipeline Description](#Pipeline Description)
+   - [why-PanSVMerge](#why-PanSVMerge)
+   - [Requirements and Install](#Requirements and Install)
+
+2. [Usage](#usage)
+   - [Annotate TR sequences](#annotate-tr-sequences)
+   - [Generate simulated TR sequences](#generate-simulated-tr-sequences)
+   - [Create reference motifset](#create-reference-motifset)
+   - [Evaluate annotation quality](#evaluate-annotation-quality)
+   - [Refine annotation](#refine-annotation)
+
+3. [Visualization](#visualization)
+   - [Plotting sequence logos to visualize motif variation](#plotting-sequence-logos-to-visualize-motif-variation)
+   - [Calculate identity matrix](#calculate-identity-matrix)
+
+4. [Support](#support)
+   - [Getting Help](#getting-help)
+   - [Citing VAMPIRE](#citing-vampire)
+   - 
 ## About
 
 SV-Merger is a bioinformatics pipeline designed to merge multi-allele structural variants (SVs) located at the same genomic position based on their length and sequence similarity. This tool aims to provide a reliable and efficient method for consolidating SV data, which is crucial for accurate genomic analysis and interpretation
