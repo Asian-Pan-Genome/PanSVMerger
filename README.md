@@ -68,71 +68,61 @@ This workflow integrates both assembly-based and long-read SV callers, followed 
 
 #### 1. Assembly-based SV Calling
 
-##### SVIM-asm
 ```bash
-# Align query assembly to reference
+mkdir ./long_reads.SV/;cd ./long_reads.SV/
+# SVIM-asm
 ~/bin/minimap2/2.17/minimap2 -a -x asm5 --cs -r2k -t 4 genome.fa query.fa > alignments.sam
-
-# Process alignments
 ~/bin/samtools sort -m4G -@4 -o alignments.sorted.bam alignments.sam
 ~/bin/samtools index alignments.sorted.bam
-
-# SV calling
 ~/bin/svim-asm diploid ./ alignments.sorted.bam genome.fa
-SyRI
-bash
-# Whole-genome alignment
-~/bin/mummer-4.0.0/bin/nucmer --prefix=sample -l 100 genome.fa query.fa
 
-# Filter alignments
+# SyRI
+~/bin/mummer-4.0.0/bin/nucmer --prefix=sample -l 100 genome.fa query.fa
 ~/bin/mummer-4.0.0/delta-filter -l 100 -i 90 -1 sample.delta > sample.delta.filter
 ~/bin/mummer-4.0.0/bin/show-coords -THrd sample.delta.filter > sample.filtered.coords
 
-# Structural variant detection
 python3 ~/bin/syri-1.5/syri/bin/syri -c sample.filtered.coords -r genome.fa -q query.fa \
   -d sample.delta.filter -k --prefix sample -s ~/bin/show-snps --lf syri.log
-2. Long-read SV Calling
-bash
-cd ./long_reads.SV
-Sniffles
-bash
+```bash
+
+#### 2. Long-read SV Calling
+```bash
+mkdir ./long_reads.SV/;cd ./long_reads.SV/
+# Sniffles
 # Base alignment quality adjustment
 ~/bin/samtools calmd --threads 6 -b HiFi_reads.sort.head.bam genome.fa > HiFi_reads.sort.baq.bam
-
-# SV detection
 ~/bin/sniffles-core-1.0.12/sniffles -m HiFi_reads.sort.baq.bam -v HiFi_reads.sniffles.vcf \
   --report_BND --skip_parameter_estimation --min_support 3
-SVIM
-bash
+# SVIM
 ~/bin/svim alignment ./ HiFi_reads.sort.head.bam genome.fa
-CuteSV
-bash
+# CuteSV
 ~/bin/cuteSV HiFi_reads.sort.head.bam genome.fa HiFi_reads.cuteSV.vcf ./ \
   --max_cluster_bias_INS 1000 --diff_ratio_merging_INS 0.9 \
   --max_cluster_bias_DEL 1000 --diff_ratio_merging_DEL 0.5 -t 8 --genotype
-PBSV
-bash
-# Signature discovery
+# PBSV
 ~/bin/pbsv discover HiFi_reads.sort.head.bam HiFi_reads.svsig.gz
 tabix -c '#' -s 3 -b 4 -e 4 HiFi_reads.svsig.gz
-
-# SV calling
 ~/bin/pbsv call --ccs genome.fa HiFi_reads.svsig.gz HiFi_reads.pbsv.vcf
-3. Merging Results
-bash
+```bash
+
+#### 3. Merging Results
+```bash
 # Combine VCFs from all callers
 ls ./long_reads.SV/*.vcf > combine.txt
 ls ./assembly_based.SV/*.vcf >> combine.txt
 
 # Merge with SURVIVOR (max distance 1000bp, require 2 callers support)
 ~/bin/SURVIVOR merge combine.txt 1000 2 1 1 0 50 sampleN.truth.sv.vcf.gz
-Output Files
-sampleN.truth.sv.vcf.gz: Final merged VCF
+```bash
+
+#### Output Files
+```bash
+sampleN.truth.sv.vcf.gz: High quality final merged VCF
 
 ./long_reads.SV/: Individual caller VCFs
 
 ./assembly_based.SV/: Assembly-based VCFs
-
+```bash
 
 ### Contacts
 (yangting@genomics.cn)
