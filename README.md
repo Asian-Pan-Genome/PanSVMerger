@@ -87,9 +87,8 @@ python3 ~/bin/syri-1.5/syri/bin/syri -c sample.filtered.coords -r genome.fa -q q
 
 #### 2. Long-read SV Calling
 ```
-mkdir ./long_reads.SV/; cd ./long_reads.SV/
+mkdir ./long_reads.SV/ && cd ./long_reads.SV/
 # Sniffles
-# Base alignment quality adjustment
 ~/bin/samtools calmd --threads 6 -b HiFi_reads.sort.head.bam genome.fa > HiFi_reads.sort.baq.bam
 ~/bin/sniffles-core-1.0.12/sniffles -m HiFi_reads.sort.baq.bam -v HiFi_reads.sniffles.vcf \
   --report_BND --skip_parameter_estimation --min_support 3
